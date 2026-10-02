@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Comments</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+<aside class="sidebar">
+
+<h2>🐞 Bug Tracker</h2>
+
+<nav>
+
+<a href="dashboard.html">🏠 Dashboard</a>
+
+<a href="add-bug.html">➕ Add Bug</a>
+
+<a href="bugs.html">📋 All Bugs</a>
+
+<a href="search-bug.html">🔍 Search Bug</a>
+
+<a href="developers.html">👨‍💻 Developers</a>
+
+<a href="statistics.html">📊 Statistics</a>
+
+<a href="comments.html" class="active">
+💬 Comments
+</a>
+
+<a href="history.html">🕘 History</a>
+
+<a href="reports.html">📄 Reports</a>
+
+</nav>
+
+<button onclick="logout()">🚪 Logout</button>
+
+</aside>
+
+
+<main class="main-content">
+
+<header class="top-header">
+
+<div>
+
+<h1>Comments</h1>
+
+<p>Add and view bug comments</p>
+
+</div>
+
+</header>
+
+
+<div class="form-card">
+
+<h2>Add Comment</h2>
+
+<br>
+
+<div class="form-group">
+
+<label>Bug ID</label>
+
+<input
+    type="number"
+    id="bugId"
+    placeholder="Enter bug ID">
+
+</div>
+
+
+<div class="form-group">
+
+<label>Comment</label>
+
+<textarea
+    id="comment"
+    placeholder="Enter your comment">
+</textarea>
+
+</div>
+
+
+<button
+    class="primary-button"
+    onclick="addComment()">
+
+Add Comment
+
+</button>
+
+
+<div
+    id="message"
+    class="message">
+</div>
+
+</div>
+
+
+<br>
+
+
+<div class="table-container">
+
+<h2>All Comments</h2>
+
+<br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Bug ID</th>
+
+<th>User</th>
+
+<th>Comment</th>
+
+<th>Date</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="commentsTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</main>
+
+</div>
+
+
+<script>
+
+function escapeHTML(value) {
+
+return String(value ?? "")
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;")
+.replace(/'/g, "&#039;");
+
+}
+
+
+async function addComment() {
+
+const bugId =
+    document.getElementById("bugId").value;
+
+const comment =
+    document.getElementById("comment").value;
+
+const username =
+    localStorage.getItem("username") ||
+    "admin";
+
+
+const message =
+    document.getElementById("message");
+
+
+if (!bugId || !comment.trim()) {
+
+message.style.display = "block";
+
+message.className =
+    "message error";
+
+message.textContent =
+    "Enter Bug ID and comment.";
+
+return;
+
+}
+
+
+try {
+
+const response =
+    await fetch(
+        "http://localhost:8080/api/comments",
+        {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/json"
+            },
+
+            body: JSON.stringify({
+
+                bugId: Number(bugId),
+
+                username:
+
+                    username,
+
+                comment:
+
+                    comment
+
+            })
+
+        }
+    );
+
+
+if (!response.ok) {
+
+throw new Error(
+    "Unable to add comment"
+);
+
+}
+
+
+message.style.display = "block";
+
+message.className =
+    "message success";
+
+message.textContent =
+    "Comment added successfully.";
+
+
+document.getElementById("bugId").value =
+    "";
+
+document.getElementById("comment").value =
+    "";
+
+
+loadComments();
+
+
+} catch(error) {
+
+message.style.display = "block";
+
+message.className =
+    "message error";
+
+message.textContent =
+    error.message;
+
+}
+
+}
+
+
+async function loadComments() {
+
+const table =
+    document.getElementById(
+        "commentsTable"
+    );
+
+
+try {
+
+const response =
+    await fetch(
+        "http://localhost:8080/api/comments"
+    );
+
+
+const comments =
+    await response.json();
+
+
+if (comments.length === 0) {
+
+table.innerHTML =
+`
+<tr>
+<td colspan="6">
+No comments found.
+</td>
+</tr>
+`;
+
+return;
+
+}
+
+
+table.innerHTML =
+comments.map(comment => `
+
+<tr>
+
+<td>
+${escapeHTML(comment.id)}
+</td>
+
+<td>
+${escapeHTML(comment.bugId)}
+</td>
+
+<td>
+${escapeHTML(comment.username)}
+</td>
+
+<td>
+${escapeHTML(comment.comment)}
+</td>
+
+<td>
+${escapeHTML(comment.createdAt)}
+</td>
+
+<td>
+
+<button
+    class="action-button delete-button"
+    onclick="deleteComment(${comment.id})">
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+`).join("");
+
+
+} catch(error) {
+
+table.innerHTML =
+`
+<tr>
+<td colspan="6">
+Unable to load comments.
+</td>
+</tr>
+`;
+
+}
+
+}
+
+
+async function deleteComment(id) {
+
+if (!confirm(
+    "Delete this comment?"
+)) {
+    return;
+}
+
+
+try {
+
+await fetch(
+    `http://localhost:8080/api/comments/${id}`,
+    {
+        method: "DELETE"
+    }
+);
+
+
+loadComments();
+
+
+} catch(error) {
+
+alert(
+    "Unable to delete comment."
+);
+
+}
+
+}
+
+
+function logout() {
+
+localStorage.clear();
+
+window.location.href =
+    "login.html";
+
+}
+
+
+loadComments();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Bug Tracking System</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <h2>🐞 Bug Tracker</h2>
+
+        <nav>
+
+            <a
+                href="dashboard.html"
+                class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="add-bug.html">
+                ➕ Add Bug
+            </a>
+
+            <a href="bugs.html">
+                📋 All Bugs
+            </a>
+
+            <a href="search-bug.html">
+                🔍 Search Bug
+            </a>
+
+            <a href="developers.html">
+                👨‍💻 Developers
+            </a>
+
+            <a href="statistics.html">
+                📊 Statistics
+            </a>
+
+            <a href="comments.html">
+                💬 Comments
+            </a>
+
+            <a href="history.html">
+                🕘 History
+            </a>
+
+            <a href="reports.html">
+                📄 Reports
+            </a>
+
+        </nav>
+
+        <button onclick="logout()">
+            🚪 Logout
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <header class="top-header">
+
+            <div>
+
+                <h1>Dashboard</h1>
+
+                <p>
+                    Bug Tracking and Issue Resolution
+                    Workflow Management Tool
+                </p>
+
+            </div>
+
+            <div class="user-info">
+
+                👤
+                <strong id="loggedUser">
+                    Admin
+                </strong>
+
+            </div>
+
+        </header>
+
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <h3>Total Bugs</h3>
+
+                <p id="totalBugs">0</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h3>Open Bugs</h3>
+
+                <p id="openBugs">0</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h3>In Progress</h3>
+
+                <p id="progressBugs">0</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h3>Resolved</h3>
+
+                <p id="resolvedBugs">0</p>
+
+            </div>
+
+        </section>
+
+
+        <section class="welcome-card">
+
+            <h2>
+                Welcome to Bug Tracking System 👋
+            </h2>
+
+            <p>
+                Manage bugs, assign developers,
+                track status, add comments,
+                view history and generate reports.
+            </p>
+
+        </section>
+
+
+        <section class="quick-section">
+
+            <h2>Quick Actions</h2>
+
+            <div class="quick-grid">
+
+                <a
+                    href="add-bug.html"
+                    class="quick-card">
+
+                    <h3>➕ Add New Bug</h3>
+
+                    <p>
+                        Report a new bug or issue.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="bugs.html"
+                    class="quick-card">
+
+                    <h3>📋 View All Bugs</h3>
+
+                    <p>
+                        View all registered bugs.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="search-bug.html"
+                    class="quick-card">
+
+                    <h3>🔍 Search Bug</h3>
+
+                    <p>
+                        Search for a specific bug.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="developers.html"
+                    class="quick-card">
+
+                    <h3>👨‍💻 Developers</h3>
+
+                    <p>
+                        View available developers.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="statistics.html"
+                    class="quick-card">
+
+                    <h3>📊 Statistics</h3>
+
+                    <p>
+                        View bug statistics.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="comments.html"
+                    class="quick-card">
+
+                    <h3>💬 Comments</h3>
+
+                    <p>
+                        Add and view comments.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="history.html"
+                    class="quick-card">
+
+                    <h3>🕘 History</h3>
+
+                    <p>
+                        View bug activity history.
+                    </p>
+
+                </a>
+
+
+                <a
+                    href="reports.html"
+                    class="quick-card">
+
+                    <h3>📄 Reports</h3>
+
+                    <p>
+                        Generate bug reports.
+                    </p>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const API_URL =
+    "http://localhost:8080/api/bugs";
+
+
+const username =
+    localStorage.getItem("username");
+
+
+if (username) {
+
+    document
+        .getElementById("loggedUser")
+        .textContent = username;
+
+}
+
+
+async function loadDashboard() {
+
+    try {
+
+        const response =
+            await fetch(API_URL);
+
+        const bugs =
+            await response.json();
+
+
+        document
+            .getElementById("totalBugs")
+            .textContent = bugs.length;
+
+
+        document
+            .getElementById("openBugs")
+            .textContent =
+            bugs.filter(
+                bug =>
+                    String(bug.status)
+                    .toUpperCase() === "OPEN"
+            ).length;
+
+
+        document
+            .getElementById("progressBugs")
+            .textContent =
+            bugs.filter(
+                bug =>
+                    String(bug.status)
+                    .toUpperCase() === "IN_PROGRESS"
+            ).length;
+
+
+        document
+            .getElementById("resolvedBugs")
+            .textContent =
+            bugs.filter(
+                bug =>
+                    String(bug.status)
+                    .toUpperCase() === "RESOLVED"
+            ).length;
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+function logout() {
+
+    localStorage.removeItem("username");
+
+    localStorage.removeItem("role");
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+loadDashboard();
+
+</script>
+
+</body>
+</html>

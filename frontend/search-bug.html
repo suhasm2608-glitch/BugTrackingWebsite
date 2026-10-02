@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Search Bug</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+<aside class="sidebar">
+
+<h2>🐞 Bug Tracker</h2>
+
+<nav>
+
+<a href="dashboard.html">🏠 Dashboard</a>
+
+<a href="add-bug.html">➕ Add Bug</a>
+
+<a href="bugs.html">📋 All Bugs</a>
+
+<a href="search-bug.html" class="active">
+🔍 Search Bug
+</a>
+
+<a href="developers.html">👨‍💻 Developers</a>
+
+<a href="statistics.html">📊 Statistics</a>
+
+<a href="comments.html">💬 Comments</a>
+
+<a href="history.html">🕘 History</a>
+
+<a href="reports.html">📄 Reports</a>
+
+</nav>
+
+<button onclick="logout()">🚪 Logout</button>
+
+</aside>
+
+
+<main class="main-content">
+
+<header class="top-header">
+
+<div>
+
+<h1>Search Bug</h1>
+
+<p>Search a bug using its ID</p>
+
+</div>
+
+</header>
+
+
+<div class="form-card">
+
+<div class="form-group">
+
+<label>Bug ID</label>
+
+<input
+    type="number"
+    id="bugId"
+    placeholder="Enter bug ID">
+
+</div>
+
+<button
+    class="primary-button"
+    onclick="searchBug()">
+
+Search Bug
+
+</button>
+
+<div
+    id="result"
+    style="margin-top:20px;">
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+
+<script>
+
+function escapeHTML(value) {
+
+return String(value ?? "")
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;")
+.replace(/'/g, "&#039;");
+
+}
+
+
+async function searchBug() {
+
+const id =
+    document.getElementById("bugId").value;
+
+const result =
+    document.getElementById("result");
+
+
+if (!id) {
+
+result.innerHTML =
+    "<div class='message error' style='display:block'>Enter a bug ID.</div>";
+
+return;
+
+}
+
+
+try {
+
+const response =
+    await fetch(
+        `http://localhost:8080/api/bugs/${id}`
+    );
+
+
+if (!response.ok) {
+
+throw new Error("Bug not found");
+
+}
+
+
+const bug =
+    await response.json();
+
+
+result.innerHTML = `
+
+<div class="content-card">
+
+<h3>
+Bug #${escapeHTML(bug.id)}
+</h3>
+
+<p>
+<strong>Title:</strong>
+${escapeHTML(bug.title)}
+</p>
+
+<p>
+<strong>Description:</strong>
+${escapeHTML(bug.description)}
+</p>
+
+<p>
+<strong>Priority:</strong>
+${escapeHTML(bug.priority)}
+</p>
+
+<p>
+<strong>Status:</strong>
+${escapeHTML(bug.status)}
+</p>
+
+<p>
+<strong>Reported By:</strong>
+${escapeHTML(bug.reportedBy)}
+</p>
+
+<p>
+<strong>Developer:</strong>
+${escapeHTML(bug.assignedDeveloper || "-")}
+</p>
+
+</div>
+
+`;
+
+
+} catch(error) {
+
+result.innerHTML =
+`
+<div class="message error" style="display:block">
+${escapeHTML(error.message)}
+</div>
+`;
+
+}
+
+}
+
+
+function logout() {
+
+localStorage.clear();
+
+window.location.href =
+    "login.html";
+
+}
+
+</script>
+
+</body>
+</html>

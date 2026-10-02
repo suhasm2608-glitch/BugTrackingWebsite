@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Statistics</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+<aside class="sidebar">
+
+<h2>🐞 Bug Tracker</h2>
+
+<nav>
+
+<a href="dashboard.html">🏠 Dashboard</a>
+
+<a href="add-bug.html">➕ Add Bug</a>
+
+<a href="bugs.html">📋 All Bugs</a>
+
+<a href="search-bug.html">🔍 Search Bug</a>
+
+<a href="developers.html">👨‍💻 Developers</a>
+
+<a href="statistics.html" class="active">
+📊 Statistics
+</a>
+
+<a href="comments.html">💬 Comments</a>
+
+<a href="history.html">🕘 History</a>
+
+<a href="reports.html">📄 Reports</a>
+
+</nav>
+
+<button onclick="logout()">🚪 Logout</button>
+
+</aside>
+
+
+<main class="main-content">
+
+<header class="top-header">
+
+<div>
+
+<h1>Bug Statistics</h1>
+
+<p>System statistics and bug analysis</p>
+
+</div>
+
+</header>
+
+
+<section class="stats-grid">
+
+<div class="stat-card">
+
+<h3>Total</h3>
+
+<p id="total">0</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Open</h3>
+
+<p id="open">0</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>In Progress</h3>
+
+<p id="progress">0</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Resolved</h3>
+
+<p id="resolved">0</p>
+
+</div>
+
+</section>
+
+
+<section class="stats-grid">
+
+<div class="stat-card">
+
+<h3>Closed</h3>
+
+<p id="closed">0</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Critical</h3>
+
+<p id="critical">0</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>High</h3>
+
+<p id="high">0</p>
+
+</div>
+
+<div class="stat-card">
+
+<h3>Medium / Low</h3>
+
+<p id="mediumLow">0</p>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script>
+
+async function loadStatistics() {
+
+try {
+
+const response =
+    await fetch(
+        "http://localhost:8080/api/bugs"
+    );
+
+
+const bugs =
+    await response.json();
+
+
+const status =
+    value =>
+        bugs.filter(
+            bug =>
+                String(bug.status)
+                .toUpperCase() === value
+        ).length;
+
+
+const priority =
+    value =>
+        bugs.filter(
+            bug =>
+                String(bug.priority)
+                .toUpperCase() === value
+        ).length;
+
+
+document.getElementById("total")
+    .textContent = bugs.length;
+
+document.getElementById("open")
+    .textContent = status("OPEN");
+
+document.getElementById("progress")
+    .textContent = status("IN_PROGRESS");
+
+document.getElementById("resolved")
+    .textContent = status("RESOLVED");
+
+document.getElementById("closed")
+    .textContent = status("CLOSED");
+
+document.getElementById("critical")
+    .textContent = priority("CRITICAL");
+
+document.getElementById("high")
+    .textContent = priority("HIGH");
+
+document.getElementById("mediumLow")
+    .textContent =
+        priority("MEDIUM") +
+        priority("LOW");
+
+
+} catch(error) {
+
+console.error(error);
+
+}
+
+}
+
+
+function logout() {
+
+localStorage.clear();
+
+window.location.href =
+    "login.html";
+
+}
+
+
+loadStatistics();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Developers</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+<aside class="sidebar">
+
+<h2>🐞 Bug Tracker</h2>
+
+<nav>
+
+<a href="dashboard.html">🏠 Dashboard</a>
+
+<a href="add-bug.html">➕ Add Bug</a>
+
+<a href="bugs.html">📋 All Bugs</a>
+
+<a href="search-bug.html">🔍 Search Bug</a>
+
+<a href="developers.html" class="active">
+👨‍💻 Developers
+</a>
+
+<a href="statistics.html">📊 Statistics</a>
+
+<a href="comments.html">💬 Comments</a>
+
+<a href="history.html">🕘 History</a>
+
+<a href="reports.html">📄 Reports</a>
+
+</nav>
+
+<button onclick="logout()">🚪 Logout</button>
+
+</aside>
+
+
+<main class="main-content">
+
+<header class="top-header">
+
+<div>
+
+<h1>Developers</h1>
+
+<p>Development team</p>
+
+</div>
+
+</header>
+
+
+<div id="developersContainer">
+
+Loading developers...
+
+</div>
+
+</main>
+
+</div>
+
+
+<script>
+
+function escapeHTML(value) {
+
+return String(value ?? "")
+.replace(/&/g, "&amp;")
+.replace(/</g, "&lt;")
+.replace(/>/g, "&gt;")
+.replace(/"/g, "&quot;")
+.replace(/'/g, "&#039;");
+
+}
+
+
+async function loadDevelopers() {
+
+const container =
+    document.getElementById(
+        "developersContainer"
+    );
+
+
+try {
+
+const response =
+    await fetch(
+        "http://localhost:8080/api/users/developers"
+    );
+
+
+if (!response.ok) {
+
+throw new Error();
+
+}
+
+
+const developers =
+    await response.json();
+
+
+if (developers.length === 0) {
+
+container.innerHTML = `
+
+<div class="content-card">
+
+<h3>No Developers Found</h3>
+
+<p>
+No developer accounts are currently
+registered in the database.
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+container.innerHTML =
+developers.map(developer => `
+
+<div class="content-card">
+
+<h3>
+👨‍💻 ${escapeHTML(developer.username)}
+</h3>
+
+<p>
+Role:
+${escapeHTML(developer.role)}
+</p>
+
+</div>
+
+`).join("");
+
+
+} catch(error) {
+
+container.innerHTML = `
+
+<div class="content-card">
+
+<h3>Developer Information</h3>
+
+<p>
+Unable to load developers from the backend.
+</p>
+
+</div>
+
+`;
+
+}
+
+}
+
+
+function logout() {
+
+localStorage.clear();
+
+window.location.href =
+    "login.html";
+
+}
+
+
+loadDevelopers();
+
+</script>
+
+</body>
+</html>
