@@ -210,7 +210,7 @@ try {
 
 const response =
     await fetch(
-        "http://localhost:8080/api/comments",
+        "https://bugtrackingwebsite-production.up.railway.app/api/comments",
         {
 
             method: "POST",
@@ -293,7 +293,7 @@ try {
 
 const response =
     await fetch(
-        "http://localhost:8080/api/comments"
+        "https://bugtrackingwebsite-production.up.railway.app/api/comments"
     );
 
 
@@ -387,7 +387,7 @@ if (!confirm(
 try {
 
 await fetch(
-    `http://localhost:8080/api/comments/${id}`,
+    `https://bugtrackingwebsite-production.up.railway.app/api/comments/${id}`,
     {
         method: "DELETE"
     }

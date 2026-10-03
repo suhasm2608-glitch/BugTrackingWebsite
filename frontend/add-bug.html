@@ -2,329 +2,622 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>Add Bug</title>
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
-<title>Add Bug</title>
-
-<link
-    rel="stylesheet"
-    href="css/style.css">
-
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
 <div class="dashboard-container">
 
-<aside class="sidebar">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-<h2>🐞 Bug Tracker</h2>
+        <h2>🐞 Bug Tracker</h2>
 
-<nav>
+        <nav>
 
-<a href="dashboard.html">🏠 Dashboard</a>
+            <a href="dashboard.html">
+                🏠 Dashboard
+            </a>
 
-<a href="add-bug.html" class="active">
-➕ Add Bug
-</a>
+            <a href="add-bug.html" class="active">
+                ➕ Add Bug
+            </a>
 
-<a href="bugs.html">📋 All Bugs</a>
+            <a href="bugs.html">
+                📋 All Bugs
+            </a>
 
-<a href="search-bug.html">🔍 Search Bug</a>
+            <a href="search-bug.html">
+                🔍 Search Bug
+            </a>
 
-<a href="developers.html">👨‍💻 Developers</a>
+            <a href="developers.html">
+                👨‍💻 Developers
+            </a>
 
-<a href="statistics.html">📊 Statistics</a>
+            <a href="statistics.html">
+                📊 Statistics
+            </a>
 
-<a href="comments.html">💬 Comments</a>
+            <a href="comments.html">
+                💬 Comments
+            </a>
 
-<a href="history.html">🕘 History</a>
+            <a href="history.html">
+                🕘 History
+            </a>
 
-<a href="reports.html">📄 Reports</a>
+            <a href="reports.html">
+                📄 Reports
+            </a>
 
-</nav>
+        </nav>
 
-<button onclick="logout()">🚪 Logout</button>
+        <button onclick="logout()">
+            🚪 Logout
+        </button>
 
-</aside>
+    </aside>
 
 
-<main class="main-content">
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
 
-<header class="top-header">
+        <header class="top-header">
 
-<div>
+            <div>
 
-<h1>Add New Bug</h1>
+                <h1>Add New Bug</h1>
 
-<p>Report a new software issue</p>
+                <p>
+                    Report a new software issue
+                </p>
 
-</div>
+            </div>
 
-</header>
+        </header>
 
 
-<div class="form-card">
+        <!-- FORM -->
+        <div class="form-card">
 
-<form id="bugForm">
+            <form id="bugForm">
 
-<div class="form-group">
+                <!-- BUG TITLE -->
+                <div class="form-group">
 
-<label>Bug Title</label>
+                    <label for="title">
+                        Bug Title
+                    </label>
 
-<input
-    type="text"
-    id="title"
-    required
-    placeholder="Enter bug title">
+                    <input
+                        type="text"
+                        id="title"
+                        required
+                        placeholder="Enter bug title"
+                    >
 
-</div>
+                </div>
 
 
-<div class="form-group">
+                <!-- DESCRIPTION -->
+                <div class="form-group">
 
-<label>Description</label>
+                    <label for="description">
+                        Description
+                    </label>
 
-<textarea
-    id="description"
-    required
-    placeholder="Describe the bug">
-</textarea>
+                    <textarea
+                        id="description"
+                        required
+                        placeholder="Describe the bug"
+                    ></textarea>
 
-</div>
+                </div>
 
 
-<div class="form-row">
+                <!-- PRIORITY + STATUS -->
+                <div class="form-row">
 
-<div class="form-group">
+                    <div class="form-group">
 
-<label>Priority</label>
+                        <label for="priority">
+                            Priority
+                        </label>
 
-<select id="priority" required>
+                        <select id="priority" required>
 
-<option value="">Select Priority</option>
+                            <option value="">
+                                Select Priority
+                            </option>
 
-<option value="LOW">Low</option>
+                            <option value="LOW">
+                                Low
+                            </option>
 
-<option value="MEDIUM">Medium</option>
+                            <option value="MEDIUM">
+                                Medium
+                            </option>
 
-<option value="HIGH">High</option>
+                            <option value="HIGH">
+                                High
+                            </option>
 
-<option value="CRITICAL">Critical</option>
+                            <option value="CRITICAL">
+                                Critical
+                            </option>
 
-</select>
+                        </select>
 
-</div>
+                    </div>
 
 
-<div class="form-group">
+                    <div class="form-group">
 
-<label>Status</label>
+                        <label for="status">
+                            Status
+                        </label>
 
-<select id="status">
+                        <select id="status">
 
-<option value="OPEN">Open</option>
+                            <option value="OPEN">
+                                Open
+                            </option>
 
-<option value="IN_PROGRESS">
-In Progress
-</option>
+                            <option value="IN_PROGRESS">
+                                In Progress
+                            </option>
 
-<option value="RESOLVED">
-Resolved
-</option>
+                            <option value="RESOLVED">
+                                Resolved
+                            </option>
 
-<option value="CLOSED">
-Closed
-</option>
+                            <option value="CLOSED">
+                                Closed
+                            </option>
 
-</select>
+                        </select>
 
-</div>
+                    </div>
 
-</div>
+                </div>
 
 
-<div class="form-row">
+                <!-- REPORTED BY + DEVELOPER -->
+                <div class="form-row">
 
-<div class="form-group">
+                    <div class="form-group">
 
-<label>Reported By</label>
+                        <label for="reportedBy">
+                            Reported By
+                        </label>
 
-<input
-    type="text"
-    id="reportedBy"
-    required>
+                        <input
+                            type="text"
+                            id="reportedBy"
+                            required
+                        >
 
-</div>
+                    </div>
 
 
-<div class="form-group">
+                    <div class="form-group">
 
-<label>Assigned Developer</label>
+                        <label for="assignedDeveloper">
+                            Assigned Developer
+                        </label>
 
-<input
-    type="text"
-    id="assignedDeveloper"
-    placeholder="Enter developer">
+                        <input
+                            type="text"
+                            id="assignedDeveloper"
+                            placeholder="Enter developer"
+                        >
 
-</div>
+                    </div>
 
-</div>
+                </div>
 
 
-<div class="button-row">
+                <!-- BUTTONS -->
+                <div class="button-row">
 
-<button
-    type="submit"
-    class="save-button">
+                    <button
+                        type="submit"
+                        class="save-button"
+                        id="saveButton"
+                    >
+                        Save Bug
+                    </button>
 
-    Save Bug
 
-</button>
+                    <button
+                        type="button"
+                        class="cancel-button"
+                        onclick="window.location.href='dashboard.html'"
+                    >
+                        Cancel
+                    </button>
 
-<button
-    type="button"
-    class="cancel-button"
-    onclick="window.location.href='dashboard.html'">
+                </div>
 
-    Cancel
 
-</button>
+                <!-- MESSAGE -->
+                <div
+                    id="message"
+                    class="message"
+                ></div>
 
-</div>
+            </form>
 
+        </div>
 
-<div
-    id="message"
-    class="message">
-</div>
-
-</form>
-
-</div>
-
-</main>
+    </main>
 
 </div>
 
 
 <script>
 
-const username =
-    localStorage.getItem("username");
+    /*
+     * =====================================================
+     * RAILWAY BACKEND
+     * =====================================================
+     */
+
+    const API_BASE_URL =
+        "https://bugtrackingwebsite-production.up.railway.app";
 
 
-document.getElementById("reportedBy").value =
-    username || "";
+    /*
+     * =====================================================
+     * GET LOGGED-IN USER
+     * =====================================================
+     */
+
+    const username =
+        localStorage.getItem("username");
 
 
-document
-.getElementById("bugForm")
-.addEventListener("submit", async function(event) {
-
-event.preventDefault();
+    document.getElementById("reportedBy").value =
+        username || "";
 
 
-const bug = {
+    /*
+     * =====================================================
+     * BUG FORM
+     * =====================================================
+     */
 
-title:
-    document.getElementById("title").value,
+    document
+        .getElementById("bugForm")
+        .addEventListener("submit", async function(event) {
 
-description:
-    document.getElementById("description").value,
-
-priority:
-    document.getElementById("priority").value,
-
-status:
-    document.getElementById("status").value,
-
-reportedBy:
-    document.getElementById("reportedBy").value,
-
-assignedDeveloper:
-    document.getElementById("assignedDeveloper").value
-
-};
+            event.preventDefault();
 
 
-const message =
-    document.getElementById("message");
+            const message =
+                document.getElementById("message");
+
+            const saveButton =
+                document.getElementById("saveButton");
 
 
-try {
+            /*
+             * Clear previous message
+             */
 
-const response =
-    await fetch(
-        "http://localhost:8080/api/bugs",
-        {
-            method: "POST",
+            message.textContent = "";
 
-            headers: {
-                "Content-Type":
-                    "application/json"
-            },
-
-            body:
-                JSON.stringify(bug)
-        }
-    );
+            message.style.display = "none";
 
 
-if (!response.ok) {
+            /*
+             * Get form values
+             */
 
-throw new Error(
-    "Unable to save bug"
-);
+            const bug = {
 
-}
+                title:
+                    document
+                    .getElementById("title")
+                    .value
+                    .trim(),
+
+                description:
+                    document
+                    .getElementById("description")
+                    .value
+                    .trim(),
+
+                priority:
+                    document
+                    .getElementById("priority")
+                    .value,
+
+                status:
+                    document
+                    .getElementById("status")
+                    .value,
+
+                reportedBy:
+                    document
+                    .getElementById("reportedBy")
+                    .value
+                    .trim(),
+
+                assignedDeveloper:
+                    document
+                    .getElementById("assignedDeveloper")
+                    .value
+                    .trim()
+
+            };
 
 
-message.style.display = "block";
+            /*
+             * Basic validation
+             */
 
-message.className =
-    "message success";
+            if (!bug.title) {
 
-message.textContent =
-    "Bug added successfully!";
+                showError(
+                    "Please enter the bug title."
+                );
 
-
-document.getElementById("bugForm").reset();
-
-document.getElementById("reportedBy").value =
-    username || "";
-
-
-} catch(error) {
-
-message.style.display = "block";
-
-message.className =
-    "message error";
-
-message.textContent =
-    error.message;
-
-}
-
-});
+                return;
+            }
 
 
-function logout() {
+            if (!bug.description) {
 
-localStorage.clear();
+                showError(
+                    "Please enter the bug description."
+                );
 
-window.location.href =
-    "login.html";
+                return;
+            }
 
-}
+
+            if (!bug.priority) {
+
+                showError(
+                    "Please select a priority."
+                );
+
+                return;
+            }
+
+
+            if (!bug.reportedBy) {
+
+                showError(
+                    "Reported By field is required."
+                );
+
+                return;
+            }
+
+
+            /*
+             * Disable button
+             */
+
+            saveButton.disabled = true;
+
+            saveButton.textContent =
+                "Saving...";
+
+
+            try {
+
+                /*
+                 * IMPORTANT:
+                 * This is now Railway,
+                 * NOT localhost.
+                 */
+
+                const response =
+                    await fetch(
+                        API_BASE_URL + "/api/bugs",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(bug)
+
+                        }
+                    );
+
+
+                /*
+                 * Try to read response
+                 */
+
+                let data = null;
+
+                try {
+
+                    data =
+                        await response.json();
+
+                } catch (jsonError) {
+
+                    console.log(
+                        "Response was not JSON."
+                    );
+
+                }
+
+
+                /*
+                 * Check response
+                 */
+
+                if (!response.ok) {
+
+                    let errorMessage =
+                        "Unable to save bug.";
+
+                    if (data) {
+
+                        if (data.message) {
+
+                            errorMessage =
+                                data.message;
+
+                        } else if (data.error) {
+
+                            errorMessage =
+                                data.error;
+
+                        }
+
+                    }
+
+                    throw new Error(
+                        errorMessage
+                    );
+                }
+
+
+                /*
+                 * SUCCESS
+                 */
+
+                message.style.display =
+                    "block";
+
+                message.className =
+                    "message success";
+
+                message.textContent =
+                    "Bug added successfully!";
+
+
+                /*
+                 * Reset form
+                 */
+
+                document
+                    .getElementById("bugForm")
+                    .reset();
+
+
+                /*
+                 * Put username back
+                 */
+
+                document
+                    .getElementById("reportedBy")
+                    .value =
+                    username || "";
+
+
+            } catch (error) {
+
+                console.error(
+                    "Add Bug Error:",
+                    error
+                );
+
+
+                message.style.display =
+                    "block";
+
+                message.className =
+                    "message error";
+
+
+                /*
+                 * Display useful error
+                 */
+
+                if (
+                    error.message ===
+                    "Failed to fetch"
+                ) {
+
+                    message.textContent =
+                        "Failed to fetch. Please check the Railway backend connection.";
+
+                } else {
+
+                    message.textContent =
+                        error.message;
+
+                }
+
+            } finally {
+
+                /*
+                 * Enable button again
+                 */
+
+                saveButton.disabled =
+                    false;
+
+                saveButton.textContent =
+                    "Save Bug";
+
+            }
+
+        });
+
+
+    /*
+     * =====================================================
+     * SHOW ERROR
+     * =====================================================
+     */
+
+    function showError(text) {
+
+        const message =
+            document.getElementById("message");
+
+        message.style.display =
+            "block";
+
+        message.className =
+            "message error";
+
+        message.textContent =
+            text;
+
+    }
+
+
+    /*
+     * =====================================================
+     * LOGOUT
+     * =====================================================
+     */
+
+    function logout() {
+
+        localStorage.clear();
+
+        window.location.href =
+            "login.html";
+
+    }
 
 </script>
 
 </body>
+
 </html>
