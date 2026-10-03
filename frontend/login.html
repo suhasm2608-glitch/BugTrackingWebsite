@@ -1,94 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login - Bug Tracking System</title>
+    <title>Bug Tracking System - Login</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+
+        .login-container {
+            width: 400px;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo h1 {
+            color: #1e3c72;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #2a5298;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #1e3c72;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2a5298;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .error {
+            color: #d32f2f;
+        }
+
+        .success {
+            color: #2e7d32;
+        }
+
+        .loading {
+            text-align: center;
+            margin-top: 10px;
+            color: #555;
+            display: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: #777;
+            font-size: 12px;
+        }
+    </style>
 </head>
 
-<body class="login-page">
+<body>
 
-<div class="login-card">
+<div class="login-container">
 
-    <h1>🐞 Bug Tracker</h1>
-
-    <p>Bug Tracking and Issue Resolution System</p>
+    <div class="logo">
+        <h1>🐞 Bug Tracking</h1>
+        <p>Issue Resolution Workflow Management</p>
+    </div>
 
     <form id="loginForm">
 
         <div class="form-group">
-
-            <label>Username</label>
+            <label for="username">Username</label>
 
             <input
                 type="text"
                 id="username"
                 placeholder="Enter username"
-                required>
-
+                required
+            >
         </div>
 
         <div class="form-group">
-
-            <label>Password</label>
+            <label for="password">Password</label>
 
             <input
                 type="password"
                 id="password"
                 placeholder="Enter password"
-                required>
-
+                required
+            >
         </div>
 
         <div class="form-group">
-
-            <label>Role</label>
+            <label for="role">Role</label>
 
             <select id="role" required>
-
                 <option value="">Select Role</option>
-
                 <option value="ADMIN">Admin</option>
-
                 <option value="DEVELOPER">Developer</option>
-
                 <option value="TESTER">Tester</option>
-
+                <option value="USER">User</option>
             </select>
-
         </div>
 
-        <button
-            type="submit"
-            class="primary-button">
-
+        <button type="submit" id="loginButton">
             Login
-
         </button>
 
-        <div
-            id="message"
-            class="message">
+        <div class="loading" id="loading">
+            Logging in...
         </div>
 
+        <div class="message" id="message"></div>
+
     </form>
+
+    <div class="footer">
+        Bug Tracking and Issue Resolution Workflow Management Tool
+    </div>
 
 </div>
 
 <script>
 
-const API_URL =
-    "http://localhost:8080/api/auth/login";
+    /*
+     * IMPORTANT:
+     * Railway backend URL
+     *
+     * DO NOT use:
+     * http://localhost:8080
+     *
+     * because this website is running on Vercel.
+     */
 
-document
-    .getElementById("loginForm")
-    .addEventListener("submit", async function(event) {
+    const API_BASE_URL =
+        "https://bugtrackingwebsite-production.up.railway.app";
+
+    const LOGIN_URL =
+        API_BASE_URL + "/api/auth/login";
+
+
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const message = document.getElementById("message");
+    const loading = document.getElementById("loading");
+
+
+    loginForm.addEventListener("submit", async function(event) {
 
         event.preventDefault();
 
@@ -101,63 +225,174 @@ document
         const role =
             document.getElementById("role").value;
 
-        const message =
-            document.getElementById("message");
+
+        message.textContent = "";
+        message.className = "message";
+
+        if (!username || !password || !role) {
+
+            message.textContent =
+                "Please fill in all fields.";
+
+            message.classList.add("error");
+
+            return;
+        }
+
+
+        loginButton.disabled = true;
+        loading.style.display = "block";
+
 
         try {
 
-            const response =
-                await fetch(API_URL, {
+            console.log("Connecting to:", LOGIN_URL);
 
-                    method: "POST",
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+            const response = await fetch(LOGIN_URL, {
 
-                    body: JSON.stringify({
-                        username,
-                        password,
-                        role
-                    })
+                method: "POST",
 
-                });
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-            if (!response.ok) {
+                body: JSON.stringify({
 
-                const error =
-                    await response.text();
+                    username: username,
 
-                throw new Error(error);
+                    password: password,
+
+                    role: role
+
+                })
+
+            });
+
+
+            console.log(
+                "Server response status:",
+                response.status
+            );
+
+
+            let data = null;
+
+            try {
+
+                data = await response.json();
+
+            } catch (jsonError) {
+
+                console.log(
+                    "Response is not JSON."
+                );
 
             }
 
-            const user =
-                await response.json();
+
+            if (!response.ok) {
+
+                let errorMessage =
+                    "Login failed.";
+
+                if (data) {
+
+                    if (data.message) {
+                        errorMessage = data.message;
+                    }
+
+                    else if (data.error) {
+                        errorMessage = data.error;
+                    }
+
+                    else if (typeof data === "string") {
+                        errorMessage = data;
+                    }
+                }
+
+                message.textContent =
+                    errorMessage;
+
+                message.classList.add("error");
+
+                return;
+            }
+
+
+            /*
+             * Login successful
+             */
+
+            message.textContent =
+                "Login successful!";
+
+            message.classList.add("success");
+
+
+            /*
+             * Store login information
+             */
 
             localStorage.setItem(
                 "username",
-                user.username
+                username
             );
 
             localStorage.setItem(
                 "role",
-                user.role
+                role
             );
 
-            window.location.href =
-                "dashboard.html";
 
-        } catch (error) {
+            /*
+             * Store server response
+             * for use by dashboard/pages.
+             */
 
-            message.style.display = "block";
+            if (data) {
 
-            message.className =
-                "message error";
+                localStorage.setItem(
+                    "loginData",
+                    JSON.stringify(data)
+                );
+            }
+
+
+            /*
+             * Redirect to dashboard
+             */
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "dashboard.html";
+
+            }, 500);
+
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Login error:",
+                error
+            );
+
 
             message.textContent =
-                error.message ||
-                "Login failed";
+                "Failed to fetch. Please check the backend connection.";
+
+            message.classList.add("error");
+
+        }
+
+        finally {
+
+            loginButton.disabled = false;
+
+            loading.style.display = "none";
 
         }
 
