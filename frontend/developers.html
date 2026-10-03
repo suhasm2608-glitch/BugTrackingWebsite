@@ -62,11 +62,97 @@
 
 <h1>Developers</h1>
 
-<p>Development team</p>
+<p>Manage development team</p>
 
 </div>
 
 </header>
+
+
+<!-- ADD DEVELOPER -->
+
+<div class="content-card">
+
+<h2>➕ Add Developer</h2>
+
+<p>Create a new developer account.</p>
+
+<form id="developerForm">
+
+<div style="margin-bottom: 15px;">
+
+<label for="username">
+<strong>Username</strong>
+</label>
+
+<input
+    type="text"
+    id="username"
+    placeholder="Enter developer username"
+    required
+    style="
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        box-sizing: border-box;
+    ">
+
+</div>
+
+
+<div style="margin-bottom: 15px;">
+
+<label for="password">
+<strong>Password</strong>
+</label>
+
+<input
+    type="password"
+    id="password"
+    placeholder="Enter developer password"
+    required
+    style="
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        box-sizing: border-box;
+    ">
+
+</div>
+
+
+<button
+    type="submit"
+    style="
+        padding: 10px 20px;
+        cursor: pointer;
+    ">
+
+➕ Add Developer
+
+</button>
+
+</form>
+
+
+<div
+    id="message"
+    style="
+        margin-top: 15px;
+        font-weight: bold;
+    ">
+</div>
+
+</div>
+
+
+<!-- DEVELOPERS LIST -->
+
+<div style="margin-top: 25px;">
+
+<h2>👨‍💻 Developer Team</h2>
+
+</div>
 
 
 <div id="developersContainer">
@@ -82,120 +168,296 @@ Loading developers...
 
 <script>
 
+const API_BASE_URL =
+    "https://bugtrackingwebsite-production.up.railway.app";
+
+
 function escapeHTML(value) {
 
-return String(value ?? "")
-.replace(/&/g, "&amp;")
-.replace(/</g, "&lt;")
-.replace(/>/g, "&gt;")
-.replace(/"/g, "&quot;")
-.replace(/'/g, "&#039;");
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
+
+/* ============================
+   LOAD DEVELOPERS
+============================ */
 
 async function loadDevelopers() {
 
-const container =
-    document.getElementById(
-        "developersContainer"
+    const container =
+        document.getElementById(
+            "developersContainer"
+        );
+
+
+    container.innerHTML =
+        "Loading developers...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                API_BASE_URL +
+                "/api/developers"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Failed to load developers"
+            );
+
+        }
+
+
+        const developers =
+            await response.json();
+
+
+        if (
+            !developers ||
+            developers.length === 0
+        ) {
+
+            container.innerHTML = `
+
+                <div class="content-card">
+
+                    <h3>No Developers Found</h3>
+
+                    <p>
+                        No developer accounts are
+                        currently registered.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML =
+            developers.map(
+                developer => `
+
+                <div class="content-card">
+
+                    <h3>
+                        👨‍💻
+                        ${escapeHTML(
+                            developer.username
+                        )}
+                    </h3>
+
+                    <p>
+                        <strong>Role:</strong>
+                        ${escapeHTML(
+                            developer.role
+                        )}
+                    </p>
+
+                </div>
+
+                `
+            ).join("");
+
+
+    } catch(error) {
+
+        console.error(
+            "Developer loading error:",
+            error
+        );
+
+
+        container.innerHTML = `
+
+            <div class="content-card">
+
+                <h3>Developer Information</h3>
+
+                <p>
+                    Unable to load developers
+                    from the backend.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ============================
+   ADD DEVELOPER
+============================ */
+
+document
+    .getElementById("developerForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            const username =
+                document
+                    .getElementById("username")
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById("password")
+                    .value
+                    .trim();
+
+
+            const message =
+                document.getElementById(
+                    "message"
+                );
+
+
+            if (!username || !password) {
+
+                message.style.color = "red";
+
+                message.textContent =
+                    "Please enter username and password.";
+
+                return;
+
+            }
+
+
+            message.style.color = "black";
+
+            message.textContent =
+                "Adding developer...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API_BASE_URL +
+                        "/api/developers",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                username:
+                                    username,
+
+                                password:
+                                    password
+
+                            })
+
+                        }
+                    );
+
+
+                const result =
+                    await response.text();
+
+
+                if (!response.ok) {
+
+                    message.style.color =
+                        "red";
+
+                    message.textContent =
+                        result ||
+                        "Failed to add developer.";
+
+                    return;
+
+                }
+
+
+                message.style.color =
+                    "green";
+
+                message.textContent =
+                    "Developer added successfully!";
+
+
+                document
+                    .getElementById(
+                        "developerForm"
+                    )
+                    .reset();
+
+
+                // Reload developer list
+                loadDevelopers();
+
+
+            } catch(error) {
+
+                console.error(
+                    "Add developer error:",
+                    error
+                );
+
+
+                message.style.color =
+                    "red";
+
+                message.textContent =
+                    "Unable to connect to the backend.";
+
+            }
+
+        }
     );
 
 
-try {
-
-const response =
-    await fetch(
-        "https://bugtrackingwebsite-production.up.railway.app/api/users/developers"
-    );
-
-
-if (!response.ok) {
-
-throw new Error();
-
-}
-
-
-const developers =
-    await response.json();
-
-
-if (developers.length === 0) {
-
-container.innerHTML = `
-
-<div class="content-card">
-
-<h3>No Developers Found</h3>
-
-<p>
-No developer accounts are currently
-registered in the database.
-</p>
-
-</div>
-
-`;
-
-return;
-
-}
-
-
-container.innerHTML =
-developers.map(developer => `
-
-<div class="content-card">
-
-<h3>
-👨‍💻 ${escapeHTML(developer.username)}
-</h3>
-
-<p>
-Role:
-${escapeHTML(developer.role)}
-</p>
-
-</div>
-
-`).join("");
-
-
-} catch(error) {
-
-container.innerHTML = `
-
-<div class="content-card">
-
-<h3>Developer Information</h3>
-
-<p>
-Unable to load developers from the backend.
-</p>
-
-</div>
-
-`;
-
-}
-
-}
-
+/* ============================
+   LOGOUT
+============================ */
 
 function logout() {
 
-localStorage.clear();
+    localStorage.clear();
 
-window.location.href =
-    "login.html";
+    window.location.href =
+        "login.html";
 
 }
 
+
+/* ============================
+   INITIAL LOAD
+============================ */
 
 loadDevelopers();
 
 </script>
 
 </body>
+
 </html>
